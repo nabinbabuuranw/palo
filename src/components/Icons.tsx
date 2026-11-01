@@ -1,0 +1,27 @@
+// Palo's own icon set: drawn on a 20px grid, 1.6 stroke, squared terminals. No icon library.
+import type { SVGProps } from 'react';
+type P = SVGProps<SVGSVGElement> & { size?: number };
+const base = (size = 20) => ({ width: size, height: size, viewBox: '0 0 20 20', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'square' as const, strokeLinejoin: 'miter' as const, 'aria-hidden': true });
+const I = (d: JSX.Element) => ({ size, ...p }: P) => <svg {...base(size)} {...p}>{d}</svg>;
+export const IconCalendar = I(<><path d="M3 5.5h14V17H3z" /><path d="M3 9h14M7 3v4M13 3v4" /><path d="M6.5 12.5h2" /></>);
+export const IconClock = I(<><circle cx="10" cy="10" r="7" /><path d="M10 6v4.2l2.6 1.6" /></>);
+export const IconPerson = I(<><circle cx="10" cy="7" r="3" /><path d="M4 17c.8-3 3.1-4.6 6-4.6s5.2 1.6 6 4.6" /></>);
+export const IconPeople = I(<><circle cx="7.5" cy="7.5" r="2.6" /><path d="M2.5 16c.7-2.6 2.6-4 5-4s4.3 1.4 5 4" /><path d="M12.5 5.2a2.6 2.6 0 0 1 0 4.8M14.6 12.3c1.4.5 2.4 1.8 2.9 3.7" /></>);
+export const IconList = I(<><path d="M7 5.5h10M7 10h10M7 14.5h10" /><path d="M3 5.5h1.2M3 10h1.2M3 14.5h1.2" /></>);
+export const IconChart = I(<><path d="M3 17h14" /><path d="M5.5 14V9M10 14V5M14.5 14v-3" /></>);
+export const IconGear = I(<><circle cx="10" cy="10" r="2.4" /><path d="M10 2.8v2M10 15.2v2M2.8 10h2M15.2 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4" /></>);
+export const IconBell = I(<><path d="M5 14V9a5 5 0 0 1 10 0v5l1.2 1.5H3.8z" /><path d="M8.3 17.5h3.4" /></>);
+export const IconSearch = I(<><circle cx="8.7" cy="8.7" r="5" /><path d="M12.4 12.4L17 17" /></>);
+export const IconCheck = I(<path d="M4 10.5l3.8 3.7L16 6" />);
+export const IconClose = I(<path d="M5 5l10 10M15 5L5 15" />);
+export const IconMenu = I(<path d="M3 6h14M3 10h14M3 14h9" />);
+export const IconPlus = I(<path d="M10 4v12M4 10h12" />);
+export const IconChevronLeft = I(<path d="M12.5 4.5L7 10l5.5 5.5" />);
+export const IconChevronRight = I(<path d="M7.5 4.5L13 10l-5.5 5.5" />);
+export const IconPin = I(<><path d="M10 17.5s-5-5-5-9a5 5 0 0 1 10 0c0 4-5 9-5 9z" /><circle cx="10" cy="8.5" r="1.7" /></>);
+export const IconPhone = I(<path d="M5 3h3l1.3 3.4-1.8 1.2a9 9 0 0 0 4.9 4.9l1.2-1.8L17 12v3a2 2 0 0 1-2 2A12 12 0 0 1 3 5a2 2 0 0 1 2-2z" />);
+export const IconLeave = I(<><path d="M8 4H4v12h4" /><path d="M11 6.5L14.5 10 11 13.5M14.5 10H7.5" /></>);
+export const IconShield = I(<><path d="M10 2.8l6 2.4v4.4c0 3.8-2.6 6.4-6 7.6-3.4-1.2-6-3.8-6-7.6V5.2z" /><path d="M7.3 10l2 2 3.6-3.8" /></>);
+export const IconStore = I(<><path d="M3.5 8.5V17h13V8.5" /><path d="M2.5 4h15l-1 4.5a2.3 2.3 0 0 1-4.5 0 2.3 2.3 0 0 1-4.6 0 2.3 2.3 0 0 1-4.4 0z" /><path d="M8 17v-4h4v4" /></>);
+export const IconBlock = I(<><circle cx="10" cy="10" r="7" /><path d="M5.2 14.8L14.8 5.2" /></>);
+export const IconToken = I(<><path d="M4 3h12v14l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L4 17z" /><path d="M7 7.5h6M7 11h4" /></>);

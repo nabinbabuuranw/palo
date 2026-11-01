@@ -7,7 +7,8 @@ import { D1Shim } from './d1shim.ts';
 import { readFileSync } from 'node:fs';
 
 const ORIGIN = 'https://palo.sites.tab.bot';
-const SETUP_KEY = process.env.PALO_SETUP_KEY || '';
+// Tests use their own throwaway setup key (its hash is passed as an env override); the production key is not in this repo.
+const SETUP_KEY = 'test-setup-key-' + Math.random().toString(36).slice(2);
 let env: any;
 let ipCounter = 0;
 async function call(method: string, path: string, opts: { body?: any; cookie?: string; origin?: string | null; ip?: string; headers?: Record<string, string> } = {}) {
@@ -33,7 +34,8 @@ let owner: string, owner2: string, customer: string, customer2: string, admin: s
 let bizSlug: string, svcId: number, biz2Slug: string;
 
 test.before(async () => {
-  env = { DB: new D1Shim() };
+  const h = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SETUP_KEY))), (b) => b.toString(16).padStart(2, '0')).join('');
+  env = { DB: new D1Shim(), SETUP_KEY_SHA256: h };
 });
 
 test('validation helpers', () => {
@@ -262,7 +264,6 @@ test('guest cancel needs the matching code and phone', async () => {
 
 test('setup: wrong key refused; right key creates the first admin once', async () => {
   assert.equal((await call('POST', '/api/setup', { body: { key: 'nope', admin: { email: 'a@a.co', password: 'pass1234', name: 'A' } } })).status, 403);
-  if (!SETUP_KEY) { test.skip?.('PALO_SETUP_KEY not set'); return; }
   const r = await call('POST', '/api/setup', { body: { key: SETUP_KEY, admin: { email: 'admin@example.com', password: 'admin1234', name: 'Platform Admin' },
     demo: { owner_email: 'demo-owner@example.com', owner_password: 'demo1234', customer_email: 'demo-customer@example.com', customer_password: 'demo1234' } } });
   assert.equal(r.status, 201); assert.ok(r.json.demo_business);
@@ -273,7 +274,6 @@ test('setup: wrong key refused; right key creates the first admin once', async (
 });
 
 test('admin: overview, suspend business hides its page, plan change notifies owner, disable user kills sessions, audit', async () => {
-  if (!admin) return;
   const ov = await call('GET', '/api/admin/overview', { cookie: admin });
   assert.equal(ov.status, 200); assert.equal(ov.json.businesses, 3); assert.equal(ov.json.bookings_created.length, 14);
   const list = await call('GET', '/api/admin/businesses?q=Gita', { cookie: admin });
@@ -321,7 +321,7 @@ test('SQL injection strings are inert', async () => {
 test('source carries no secrets: only the setup key hash is in the code', () => {
   const src = readFileSync(new URL('../src/worker.ts', import.meta.url), 'utf8');
   assert.match(src, /SETUP_KEY_SHA256 = '[0-9a-f]{64}'/);
-  if (SETUP_KEY) assert.ok(!src.includes(SETUP_KEY));
+  assert.ok(!src.includes(SETUP_KEY));
 });
 
 test('SPA fallback: app routes get the shell with security headers, unknown routes 404, conditional requests are not forwarded', async () => {

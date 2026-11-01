@@ -4,7 +4,7 @@ import { SCHEMA } from './schema.ts';
 import { hashPassword, verifyPassword, randomToken, sha256hex } from './crypto.ts';
 import { ktmNow, parseDate, parseTime, fmtTime, addDays, weekdayOf, computeSlots, MAX_DAYS_AHEAD } from './time.ts';
 
-export interface Env { DB: D1Database; ASSETS?: { fetch: (r: Request) => Promise<Response> } }
+export interface Env { DB: D1Database; ASSETS?: { fetch: (r: Request) => Promise<Response> }; SETUP_KEY_SHA256?: string }
 type Role = 'customer' | 'owner' | 'admin';
 interface User { id: number; email: string; name: string; phone: string | null; role: Role; disabled: number; created_at: number }
 interface Ctx { req: Request; env: Env; url: URL; user: User | null; ip: string; body: any }
@@ -238,7 +238,7 @@ on('GET', '/api/health', async (ctx) => {
 on('POST', '/api/setup', async (ctx) => {
   await rateLimit(ctx.env.DB, 'setup:' + ctx.ip, 5, 3600);
   const key = typeof ctx.body.key === 'string' ? ctx.body.key : '';
-  if (!key || (await sha256hex(key)) !== SETUP_KEY_SHA256) throw err(403, 'forbidden');
+  if (!key || (await sha256hex(key)) !== (ctx.env.SETUP_KEY_SHA256 || SETUP_KEY_SHA256)) throw err(403, 'forbidden');
   const existing = await ctx.env.DB.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'admin'").first<{ n: number }>();
   if (existing && existing.n > 0) throw err(409, 'already_set_up');
   const a = ctx.body.admin || {};

@@ -60,13 +60,13 @@ Nepal-specific: Nepal time (UTC+05:45) for all slots, Nepal mobile/landline vali
 
 ```bash
 npm install
-npm test            # API unit tests (node --test, uses node:sqlite as a D1 stand-in)
+npm test            # 23 API tests (node --test, node:sqlite as a D1 stand-in; Node 22.18+)
 npm run build       # tsc + vite build + bundles the Worker into dist/site
 ```
 
 `dist/site` is a complete Cloudflare Worker folder (`_worker.js` + `tab-site.json` + static assets). To deploy it yourself with Wrangler, bind a D1 database as `DB` and the assets as `ASSETS`.
 
-**First admin:** `POST /api/setup` with a setup key whose SHA-256 is `SETUP_KEY_SHA256` in `api/src/worker.ts`. Only the hash is in this repository. Replace it with the hash of your own random key before deploying a fork. The endpoint works once, while no admin exists.
+**First admin:** `POST /api/setup` with a setup key whose SHA-256 is `SETUP_KEY_SHA256` in `api/src/worker.ts`. Only the hash is in this repository. Before deploying a fork, replace it with the hash of your own random key (or set a `SETUP_KEY_SHA256` variable on the Worker). The endpoint works once, while no admin exists.
 
 ## Business model (summary)
 
